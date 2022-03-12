@@ -1,0 +1,403 @@
+import random
+import os
+
+print('''
+  __
+  |  ""--.--.._                                             __..    ,--.
+  |       `.   "-.'""\_...-----..._   ,--. .--..-----.._.""|   |   /   /
+  |_   _    \__   ).  \           _/_ |   \|  ||  ..    >  `.  |  /   /
+    | | `.   ._)  /|\  \ .-"""":-"   "-.   `  ||  |.'  ,'`. |  |_/_  /
+    | |_.'   |   / ""`  \  ===/  ..|..  \     ||      < ""  `.  "  |/__
+    `.      .    \ ,--   \-..-\   /"\   /     ||  |>   )--   |    /    |
+     |__..-'__||__\   |___\ __.:-.._..-'_|\___||____..-/  |__|--""____/
+                           _______________________
+                          /                      ,'
+                         /      ___            ,'
+                        /   _.-'  ,'        ,-'   /
+                       / ,-' ,--.'        ,'   .'/
+                      /.'     `.         '.  ,' /
+                     /      ,-'       ,"--','  /
+                          ,'        ,'  ,'    /
+                         ,-'      ,' .-'     /
+                      ,-'                   /
+                    ,:_____________________/
+''')
+
+start_game = input("Press enter to start")
+
+charX = 0 # row number
+charY = 0 # column number
+enemyX = 1
+enemyY = 1
+
+char_hp = 10
+enemy_hp = 10
+char_mana = 3
+enemy_mana = 3
+char_model = "|😁 |"
+enemy_model = "|😈 |"
+
+hit_phrases = ["Naiso shot!", "Bingo bongo~!", "That's a HIT!", "Got ems.", "You got skills, kid."]
+miss_phrases = ["You missed.", "Tragic aim, dude.", "My grandma aims better than that.", "Whiff.", "You suck bro, nt tho."]
+skill_dict = {
+    "Ki Blast": 1, 
+    "Kamehameha": 2, 
+    "Spirit Bomb": 15, 
+    "Charge": 0
+    }
+
+
+while char_hp > 0 and enemy_hp > 0:
+    if char_hp <= 3:
+        char_model = "|😰 |"
+    if enemy_hp <= 3:
+        enemy_model = "|🥵 | "
+    board = [["|   |" for a in range(2)] for b in range(2)]
+    board[charX][charY] = char_model
+    board[enemyX][enemyY] = enemy_model
+
+    print("1         2")
+    for i in board:
+        print("----- -----")
+        print(" ".join(i))
+        print("----- -----")
+    print("3         4")
+    print(f"Your hp: {char_hp}    Enemy hp: {enemy_hp}")
+    print(f"Your mana: {char_mana}   Enemy mana: {enemy_mana}")
+        
+    move = int(input("Move to a spot: "))
+    if move == 1:
+        charX = 0
+        charY = 0
+    elif move == 2:
+        charX = 0
+        charY = 1
+    elif move == 3:
+        charX = 1
+        charY = 0
+    elif move == 4:
+        charX = 1
+        charY = 1
+
+    enemy_move = random.randint(1, 4)
+    if enemy_move == 1:
+        enemyX = 0
+        enemyY = 0
+    elif enemy_move == 2:
+        enemyX = 0
+        enemyY = 1
+    elif enemy_move == 3:
+        enemyX = 1
+        enemyY = 0
+    elif enemy_move == 4:
+        enemyX = 1
+        enemyY = 1
+
+    enemy_knowledge = False #If true, when you get knocked back, enemy won't miss
+    if move == enemy_move:
+        print("\nCLASHED! It's a BRAWL!\n -=≡(((😁 😈)))≡=-")
+        char_brawl = int(input('''
+Choose which number you want to do..
+1. Punch
+2. Kick
+3. Throw
+'''))
+        os.system('cls')
+        enemy_brawl = random.randint(1, 3)
+        if char_brawl == enemy_brawl:
+            coin_flip = random.randint(1, 2)
+            if coin_flip == 1:
+                print("You guys did the same move, but your resolve is stronger and you overwhelm the enemy.")
+                enemy_hp -= 1
+                avail_moves = [i for i in range(1, 5) if i != enemy_move]
+                enemy_move = random.choice(avail_moves)
+            elif coin_flip == 2:
+                print("You guys did the same move, but his strength to fight overpowers you.")
+                char_hp -= 1
+                avail_moves = [i for i in range(1, 5) if i != move]
+                move = random.choice(avail_moves)  
+                enemy_knowledge = True              
+        elif char_brawl == 1 and enemy_brawl == 3:
+            print("Enemy dodges your punch and throws you like a ragdoll.")
+            char_hp -= 1
+            avail_moves = [i for i in range(1, 5) if i != move]
+            move = random.choice(avail_moves)
+            enemy_knowledge = True 
+        elif char_brawl == 1 and enemy_brawl == 2:
+            print("Enemy attempts to kick you but you smash in his face before he connects.")
+            enemy_hp -= 1
+            avail_moves = [i for i in range(1, 5) if i != enemy_move]
+            enemy_move = random.choice(avail_moves)
+        elif char_brawl == 2 and enemy_brawl == 1:
+            print("You kick nothing but air as the enemy decks you.")
+            char_hp -= 1
+            avail_moves = [i for i in range(1, 5) if i != move]
+            move = random.choice(avail_moves)
+            enemy_knowledge = True 
+        elif char_brawl == 2 and enemy_brawl == 3:
+            print("Enemy dives in for a throw but his face is greeted by your knee.")
+            enemy_hp -= 1
+            avail_moves = [i for i in range(1, 5) if i != enemy_move]
+            enemy_move = random.choice(avail_moves)
+        elif char_brawl == 3 and enemy_brawl == 1:
+            print("Enemy whiffs the punch and you pivot behind him and deliver a suplex.")
+            enemy_hp -= 1
+            avail_moves = [i for i in range(1, 5) if i != enemy_move]
+            enemy_move = random.choice(avail_moves)
+        elif char_brawl == 3 and enemy_brawl == 2:
+            print("Enemy axe kicks you in the back as you attempted to dive at him.")
+            char_hp -= 1
+            avail_moves = [i for i in range(1, 5) if i != move]
+            move = random.choice(avail_moves)
+            enemy_knowledge = True 
+        if move == 1:
+            charX = 0
+            charY = 0
+        elif move == 2:
+            charX = 0
+            charY = 1
+        elif move == 3:
+            charX = 1
+            charY = 0
+        elif move == 4:
+            charX = 1
+            charY = 1
+        if enemy_move == 1:
+            enemyX = 0
+            enemyY = 0
+        elif enemy_move == 2:
+            enemyX = 0
+            enemyY = 1
+        elif enemy_move == 3:
+            enemyX = 1
+            enemyY = 0
+        elif enemy_move == 4:
+            enemyX = 1
+            enemyY = 1
+        board = [["|   |" for a in range(2)] for b in range(2)]
+        board[charX][charY] = char_model
+        board[enemyX][enemyY] = enemy_model
+        print("1         2")
+        for i in board:
+            print("----- -----")
+            print(" ".join(i))
+            print("----- -----")
+        print("3         4")
+        print(f"Your hp: {char_hp}     Enemy hp: {enemy_hp}")
+        print(f"Your mana: {char_mana}   Enemy mana: {enemy_mana}")
+        if enemy_knowledge == False:
+            print("You know where he is, land the guaranteed hit!")
+            
+    while True:
+        if enemy_knowledge:
+            print("You're stunned after that hit.. you can only regain some mana.")
+            char_mana += 1
+            break
+        char_moveset = ('''
+1. Ki Blast (1 mana) - 2 dmg 
+2. Kamehameha (2 mana) - 4 dmg
+3. Spirit Bomb (15 mana) - Auto win
+4. Charge - Increase mana by 2 
+        ''')
+        print(char_moveset)
+        char_skill = int(input("Enter what number skill to use: "))
+        if char_skill == 1:
+            if char_mana < 1:
+                print("You don't have mana to use this skill, choose another: ")
+                continue 
+            char_mana -= 1
+            skill_aim = int(input("Which square to target?: "))
+            os.system('cls')
+            if skill_aim == enemy_move:
+                print(f"{random.choice(hit_phrases)} Enemy takes 2 damage.")
+                enemy_hp -= 2
+                break
+            elif skill_aim == move:
+                print("You hit YOURSELF, idiot.")
+                char_hp -= 2
+                break
+            else:
+                print(f"{random.choice(miss_phrases)}")
+                break
+        
+        if char_skill == 2:
+            if char_mana < 2:
+                print("You don't have mana to use this skill, choose another: ")
+                continue 
+            char_mana -= 2
+            skill_aim = int(input("Which square to target?: "))
+            os.system('cls')
+            if skill_aim == enemy_move:
+                print(f"{random.choice(hit_phrases)} Enemy takes 4 damage!")
+                enemy_hp -= 4
+                break
+            elif skill_aim == move:
+                print("You hit YOURSELF, idiot.")
+                char_hp -= 4
+                break
+            else:
+                print(f"{random.choice(miss_phrases)}")
+                break
+        
+        if char_skill == 3:
+            if char_mana < 15:
+                print("You don't have mana to use this skill, choose another: ")
+                continue 
+            enemy_hp -= 100
+            print('''
+     _.-^^---....,,--       
+ _--                  --_  
+<                        >)
+|                         | 
+ \._                   _./  
+    ```--. . , ; .--''       
+          | |   |             
+       .-=||  | |=-.   
+       `-=#$%&%$#=-'   
+          | ;  :|     
+ _____.,-#%&$@%#&#~,._____
+
+ You killed him. You killed everybody. 
+            ''')
+            break
+
+        if char_skill == 4:
+            os.system('cls')
+            print("You gain 2 mana.")
+            char_mana += 2
+            break
+
+ 
+    enemy_skill = random.choice(list(skill_dict))
+    while skill_dict[enemy_skill] > enemy_mana:
+        enemy_skill = random.choice(list(skill_dict))
+    
+    if enemy_mana >= 15:
+        enemy_skill = "Spirit Bomb" 
+
+    if char_hp <= 2 and enemy_mana >= 1:
+        enemy_skill = "Ki Blast"      
+
+    if enemy_skill == "Charge":
+        print("Enemy regained 2 mana.")
+        enemy_mana += 2
+    
+    if enemy_skill == "Spirit Bomb":
+        char_hp -= 100
+        print('''
+     _.-^^---....,,--       
+ _--                  --_  
+<                        >)
+|                         | 
+ \._                   _./  
+    ```--. . , ; .--''       
+          | |   |             
+       .-=||  | |=-.   
+       `-=#$%&%$#=-'   
+          | ;  :|     
+ _____.,-#%&$@%#&#~,._____
+
+ You've been killed. The whole world has been killed. 
+
+            ''')
+            
+
+    enemy_target = random.randint(1, 4)
+    while enemy_target == enemy_move:
+        enemy_target = random.randint(1, 4)    
+    
+    if enemy_knowledge:
+        enemy_target = move
+
+    if enemy_skill == "Ki Blast":
+        enemy_mana -= 1
+        if enemy_target == move:
+            print("The enemy 'Ki Blasted' you for 2 damage!")
+            char_hp -= 2
+        else:
+            print("Enemy missed their 'Ki Blast'!")
+
+    elif enemy_skill == "Kamehameha":
+        enemy_mana -= 2
+        if enemy_target == move:
+            print("The enemy 'Kamehameha'd' your ass for 4 damage!")
+            char_hp -= 4
+        else:
+            print("Enemy missed their 'Kamehameha'! Whew.")
+    
+if char_hp <= 0 and enemy_hp <= 0:
+    print('''
+You both killed each other. 
+_____                     
+|  __ \                    
+| |  | |_ __ __ ___      __
+| |  | | '__/ _` \ \ /\ / /
+| |__| | | | (_| |\ V  V / 
+|_____/|_|  \__,_| \_/\_/  
+''')
+        
+elif char_hp <= 0:
+    print('''
+            You were defeated.
+__     __           _                    
+\ \   / /          | |                   
+ \ \_/ /__  _   _  | |     ___  ___  ___ 
+  \   / _ \| | | | | |    / _ \/ __|/ _ |
+   | | (_) | |_| | | |___| (_) \__ \  __/
+   |_|\___/ \__,_| |______\___/|___/\___|
+        ''')
+elif enemy_hp <= 0:
+    print('''
+        You defeated the enemy!!
+__     __          __          ___       _ 
+\ \   / /          \ \        / (_)     | |
+ \ \_/ /__  _   _   \ \  /\  / / _ _ __ | |
+  \   / _ \| | | |   \ \/  \/ / | | '_ \| |
+   | | (_) | |_| |    \  /\  /  | | | | |_|
+   |_|\___/ \__,_|     \/  \/   |_|_| |_(_)        
+        _
+                   \"-._ _.--"~~"--._
+                    \   "            ^.    ___
+                    /                  \.-~_.-~
+             .-----'     /\/"\ /~-._      /
+            /  __      _/\-.__\L_.-/\     "-.
+           /.-"  \    ( ` \_o>"<o_/  \  .--._       - "I saved the world"
+          /'      \    \:     "     :/_/     "`
+                  /  /\ "\    ~    /~"
+                  \ I  \/]"-._ _.-"[
+               ___ \|___/ ./    l   \___   ___
+          .--v~   "v` ( `-.__   __.-' ) ~v"   ~v--.
+       .-{   |     :   \_    "~"    _/   :     |   }-.
+      /   \  |           ~-.,___,.-~           |  /   
+     ]     \ |                                 | /     [
+     /\     \|     :    .          .     :     |/     /
+    /  ^._  _K.___,^                     ^.___,K_  _.^  
+   /   /  "~/  "\                           /"  \~"  \   
+  /   /    /     \ _          :          _ /     \    \   
+.^--./    /       Y___________l___________Y       \    \.--^.
+[    \   /        |        [/    ]        |        \   /    ]
+|     "v"         l________[____/]________j         }r"     /
+}------t          /                       \       /`-.     /
+|      |         Y                         Y     /    "-._/
+}-----v'         |         :               |     7-.     /
+|   |_|          |         l               |    / . "-._/
+l  .[_]          :          \              :  r[]/_.  /
+ \_____]                     "--.             "-.____/ 
+
+''')
+    
+
+        
+        
+
+        
+        
+
+
+    
+
+
+
+
+
+
