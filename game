@@ -34,20 +34,23 @@ char_hp = 10
 enemy_hp = 10
 char_mana = 3
 enemy_mana = 3
-char_model = "|😁 |"
-enemy_model = "|😈 |"
+
 
 hit_phrases = ["Naiso shot!", "Bingo bongo~!", "That's a HIT!", "Got ems.", "You got skills, kid."]
 miss_phrases = ["You missed.", "Tragic aim, dude.", "My grandma aims better than that.", "Whiff.", "You suck bro, nt tho."]
 skill_dict = {
     "Ki Blast": 1, 
     "Kamehameha": 2, 
-    "Spirit Bomb": 15, 
+    "Spirit Bomb": 20, 
     "Charge": 0
     }
-
+super_saiyan = False
 
 while char_hp > 0 and enemy_hp > 0:
+    if char_hp > 3:
+        char_model = "|😁 |"
+    if enemy_hp > 3: 
+        enemy_model = "|😈 |"
     if char_hp <= 3:
         char_model = "|😰 |"
     if enemy_hp <= 3:
@@ -186,18 +189,27 @@ Choose which number you want to do..
         print(f"Your hp: {char_hp}     Enemy hp: {enemy_hp}")
         print(f"Your mana: {char_mana}   Enemy mana: {enemy_mana}")
         if enemy_knowledge == False:
-            print("You know where he is, land the guaranteed hit!")
+            print("\nYou know where he is, land the guaranteed hit!")
             
     while True:
         if enemy_knowledge:
-            print("You're stunned after that hit.. you can only regain some mana.")
+            print("\nYou're stunned after that hit.. you can only regain some mana.")
             char_mana += 1
             break
-        char_moveset = ('''
+        if super_saiyan:
+            char_moveset = ('''
+1. Ki Burst (1 mana) - 3 dmg 
+2. Supreme Kamehameha (2 mana) - 7 dmg
+3. Spirit Bomb (20 mana) - Auto win
+4. Super Charge - Increase mana by 3 
+        ''')
+        else:
+            char_moveset = ('''
 1. Ki Blast (1 mana) - 2 dmg 
 2. Kamehameha (2 mana) - 4 dmg
-3. Spirit Bomb (15 mana) - Auto win
+3. Spirit Bomb (20 mana) - Auto win
 4. Charge - Increase mana by 2 
+5. Super Saiyan (6 mana) - Gain 2 hp and access to new powerful skills
         ''')
         print(char_moveset)
         char_skill = int(input("Enter what number skill to use: "))
@@ -209,12 +221,16 @@ Choose which number you want to do..
             skill_aim = int(input("Which square to target?: "))
             os.system('cls')
             if skill_aim == enemy_move:
-                print(f"{random.choice(hit_phrases)} Enemy takes 2 damage.")
-                enemy_hp -= 2
-                break
+                if super_saiyan:
+                    print(f"{random.choice(hit_phrases)} Enemy takes 3 damage.")
+                    break
+                else:
+                    print(f"{random.choice(hit_phrases)} Enemy takes 2 damage.")
+                    enemy_hp -= 2
+                    break
             elif skill_aim == move:
                 print("You hit YOURSELF, idiot.")
-                char_hp -= 2
+                char_hp -= 1
                 break
             else:
                 print(f"{random.choice(miss_phrases)}")
@@ -228,19 +244,24 @@ Choose which number you want to do..
             skill_aim = int(input("Which square to target?: "))
             os.system('cls')
             if skill_aim == enemy_move:
-                print(f"{random.choice(hit_phrases)} Enemy takes 4 damage!")
-                enemy_hp -= 4
-                break
+                if super_saiyan:
+                    print(f"{random.choice(hit_phrases)} Enemy takes 7 whoppin' damage! That's that Super Saiyan strength for you.")
+                    enemy_hp -= 7
+                    break
+                else:
+                    print(f"{random.choice(hit_phrases)} Enemy takes 4 damage!")
+                    enemy_hp -= 4
+                    break
             elif skill_aim == move:
                 print("You hit YOURSELF, idiot.")
-                char_hp -= 4
+                char_hp -= 1
                 break
             else:
                 print(f"{random.choice(miss_phrases)}")
                 break
         
         if char_skill == 3:
-            if char_mana < 15:
+            if char_mana < 20:
                 print("You don't have mana to use this skill, choose another: ")
                 continue 
             enemy_hp -= 100
@@ -263,9 +284,30 @@ Choose which number you want to do..
 
         if char_skill == 4:
             os.system('cls')
-            print("You gain 2 mana.")
-            char_mana += 2
-            break
+            if super_saiyan:
+                print("You gain 3 mana.")
+                char_mana += 3
+                break
+            else:
+                print("You gain 2 mana.")
+                char_mana += 2
+                break
+        if not super_saiyan:
+            if char_skill == 5:
+                if char_mana < 6:
+                    print("You don't have mana to use this skill, choose another: ")
+                    continue 
+                os.system('cls')
+                print('''
+You spend 5 episodes screaming at the sky until you finally become..
+            S U P E R  S A I Y A N
+               🔥🔥  ෴  🔥🔥
+                🔥ᕙ(⇀‸↼‶)ᕗ🔥  - eeYYYAAAAAA
+                ''')
+                char_mana -= 6
+                char_hp += 2
+                super_saiyan = True
+                break
 
  
     enemy_skill = random.choice(list(skill_dict))
@@ -385,6 +427,23 @@ l  .[_]          :          \              :  r[]/_.  /
  \_____]                     "--.             "-.____/ 
 
 ''')
+    
+
+        
+        
+
+        
+        
+
+
+    
+
+
+
+
+
+
+
     
 
         
